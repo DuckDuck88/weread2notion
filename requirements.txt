@@ -1,1 +1,2 @@
 requests~=2.26.0
+notion-client==1.0.0
