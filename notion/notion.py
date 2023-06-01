@@ -172,7 +172,7 @@ class NotionClient(object):
             id = results[key].get("id")
             self.client.blocks.children.append(block_id=id, children=[value])
 
-    def insert_to_notion(self, bookName, bookId, book_str_id, cover, sort, author, isbn, rating,
+    def insert_to_notion(self, bookName, bookId, book_str_id, cover, sort, author, isbn, rating, intro, category,
                          read_info=None):
         """插入到notion"""
         time.sleep(0.3)
@@ -189,6 +189,8 @@ class NotionClient(object):
             "Sort": {"number": sort},
             "Rating": {"number": rating},
             "Cover": {"files": [{"type": "external", "name": "Cover", "external": {"url": cover}}]},
+            "intro": {"rich_text": [{"type": "text", "text": {"content": intro}}]},
+            "category": {"select": {"name": category}}
         }
         if read_info != None:
             markedStatus = read_info.get("markedStatus", 0)
@@ -240,71 +242,3 @@ class NotionClient(object):
         if (len(response.get("results")) == 1):
             return response.get("results")[0].get("properties").get("Sort").get("number")
         return 0
-
-
-if __name__ == '__main__':
-    notion = NotionClient()
-    notion.test_api()
-
-# try:
-#     from dotenv import load_dotenv
-# except ModuleNotFoundError:
-#     print("Could not load .env because python-dotenv not found.")
-# else:
-#     load_dotenv()
-
-# # Initialize the client
-# notion = Client(auth=NOTION_TOKEN)
-
-
-# # Search for an item
-# print("\nSearching for the word 'People' ")
-# results = notion.search(query="People").get("results")
-# print(len(results))
-# result = results[0]
-# print("The result is a", result["object"])
-# pprint(result["properties"])
-
-# database_id = result["id"]  # store the database id in a variable for future use
-
-# # Create a new page
-# your_name = input("\n\nEnter your name: ")
-# gh_uname = input("Enter your github username: ")
-# new_page = {
-#     "Name": {"title": [{"text": {"content": your_name}}]},
-#     "Tags": {"type": "multi_select", "multi_select": [{"name": "python"}]},
-#     "GitHub": {
-#         "type": "rich_text",
-#         "rich_text": [
-#             {
-#                 "type": "text",
-#                 "text": {"content": gh_uname},
-#             },
-#         ],
-#     },
-# }
-# notion.pages.create(parent={"database_id": database_id}, properties=new_page)
-# print("You were added to the People database!")
-
-
-# # Query a database
-# name = input("\n\nEnter the name of the person to search in People: ")
-# results = notion.databases.query(
-#     **{
-#         "database_id": database_id,
-#         "filter": {"property": "Name", "text": {"contains": name}},
-#     }
-# ).get("results")
-
-# no_of_results = len(results)
-
-# if no_of_results == 0:
-#     print("No results found.")
-#     sys.exit()
-
-# print(f"No of results found: {len(results)}")
-
-# result = results[0]
-
-# print(f"The first result is a {result['object']} with id {result['id']}.")
-# print(f"This was created on {result['created_time']}")

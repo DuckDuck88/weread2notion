@@ -40,11 +40,16 @@ class WeRead:
         params = dict(bookId=bookId)
         r = self.session.get(self.WEREAD_BOOK_INFO, params=params)
         isbn = ""
+        newRating = 0
+        intro = ""
+        category = ""
         if r.ok:
             data = r.json()
             isbn = data["isbn"]
             newRating = data["newRating"] / 1000
-        return (isbn, newRating)
+            intro = data["intro"]
+            category = data["category"]
+        return (isbn, newRating, intro, category)
 
     def get_review_list(self, bookId):
         """获取笔记"""
@@ -142,8 +147,3 @@ class WeRead:
                 cookies_dict, cookiejar=None, overwrite=True
             )
         return cookiejar
-
-
-if __name__ == '__main__':
-    weread_cokkies = WEREAD_COOKIE
-    weread = WeRead(weread_cokkies)
