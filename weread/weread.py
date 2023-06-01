@@ -1,43 +1,33 @@
 import hashlib
+import json
 import re
 from http.cookies import SimpleCookie
 
 import requests
 from requests.utils import cookiejar_from_dict
+
+from logger import info, error
 from settings.settings import WEREAD_COOKIE
 
 
-def parse_cookie_string(cookie_string):
-    cookie = SimpleCookie()
-    cookie.load(cookie_string)
-    cookies_dict = {}
-    cookiejar = None
-    for key, morsel in cookie.items():
-        cookies_dict[key] = morsel.value
-        cookiejar = cookiejar_from_dict(
-            cookies_dict, cookiejar=None, overwrite=True
-        )
-    return cookiejar
-
-
-WEREAD_URL = "https://weread.qq.com/"
-WEREAD_NOTEBOOKS_URL = "https://i.weread.qq.com/user/notebooks"
-WEREAD_BOOKMARKLIST_URL = "https://i.weread.qq.com/book/bookmarklist"
-WEREAD_CHAPTER_INFO = "https://i.weread.qq.com/book/chapterInfos"
-WEREAD_READ_INFO_URL = "https://i.weread.qq.com/book/readinfo"
-WEREAD_REVIEW_LIST_URL = "https://i.weread.qq.com/review/list"
-WEREAD_BOOK_INFO = "https://i.weread.qq.com/book/info"
-
-
 class WeRead:
+    WEREAD_URL = "https://weread.qq.com/"
+    WEREAD_NOTEBOOKS_URL = "https://i.weread.qq.com/user/notebooks"
+    # WEREAD_NOTEBOOKS_URL = "https://i.weread.qq.com/shelf/friendCommon"
+    WEREAD_BOOKMARKLIST_URL = "https://i.weread.qq.com/book/bookmarklist"
+    WEREAD_CHAPTER_INFO = "https://i.weread.qq.com/book/chapterInfos"
+    WEREAD_READ_INFO_URL = "https://i.weread.qq.com/book/readinfo"
+    WEREAD_REVIEW_LIST_URL = "https://i.weread.qq.com/review/list"
+    WEREAD_BOOK_INFO = "https://i.weread.qq.com/book/info"
+
     def __init__(self, weread_cookie):
         self.session = requests.Session()
-        self.session.cookies = parse_cookie_string(weread_cookie)
+        self.session.cookies = self.parse_cookie_string(weread_cookie)
 
     def get_bookmark_list(self, bookId):
         """获取我的划线"""
         params = dict(bookId=bookId)
-        r = self.session.get(WEREAD_BOOKMARKLIST_URL, params=params)
+        r = self.session.get(self.WEREAD_BOOKMARKLIST_URL, params=params)
         if r.ok:
             updated = r.json().get("updated")
             updated = sorted(updated, key=lambda x: (
@@ -48,7 +38,7 @@ class WeRead:
     def get_bookinfo(self, bookId):
         """获取书的详情"""
         params = dict(bookId=bookId)
-        r = self.session.get(WEREAD_BOOK_INFO, params=params)
+        r = self.session.get(self.WEREAD_BOOK_INFO, params=params)
         isbn = ""
         if r.ok:
             data = r.json()
@@ -59,7 +49,7 @@ class WeRead:
     def get_review_list(self, bookId):
         """获取笔记"""
         params = dict(bookId=bookId, listType=11, mine=1, syncKey=0)
-        r = self.session.get(WEREAD_REVIEW_LIST_URL, params=params)
+        r = self.session.get(self.WEREAD_REVIEW_LIST_URL, params=params)
         reviews = r.json().get("reviews")
         summary = list(filter(lambda x: x.get("review").get("type") == 4, reviews))
         reviews = list(filter(lambda x: x.get("review").get("type") == 1, reviews))
@@ -70,7 +60,7 @@ class WeRead:
     def get_read_info(self, bookId):
         params = dict(bookId=bookId, readingDetail=1,
                       readingBookIndex=1, finishedDate=1)
-        r = self.session.get(WEREAD_READ_INFO_URL, params=params)
+        r = self.session.get(self.WEREAD_READ_INFO_URL, params=params)
         if r.ok:
             return r.json()
         return None
@@ -122,7 +112,7 @@ class WeRead:
             'synckeys': [0],
             'teenmode': 0
         }
-        r = self.session.post(WEREAD_CHAPTER_INFO, json=body)
+        r = self.session.post(self.WEREAD_CHAPTER_INFO, json=body)
         if r.ok and "data" in r.json() and len(r.json()["data"]) == 1 and "updated" in r.json()["data"][0]:
             update = r.json()["data"][0]["updated"]
             return {item["chapterUid"]: item for item in update}
@@ -130,15 +120,28 @@ class WeRead:
 
     def get_notebooklist(self):
         """获取笔记本列表"""
-        r = self.session.get(WEREAD_NOTEBOOKS_URL)
+        # params = dict(userVid=self.session.cookies.get("wr_vid"))
+        r = self.session.get(self.WEREAD_NOTEBOOKS_URL)
         if r.ok:
             data = r.json()
             books = data.get("books")
             books.sort(key=lambda x: x["sort"])
             return books
         else:
-            print(r.text)
+            error(f'获取图书失败,{r.text}')
         return None
+
+    def parse_cookie_string(self, cookie_string):
+        cookie = SimpleCookie()
+        cookie.load(cookie_string)
+        cookies_dict = {}
+        cookiejar = None
+        for key, morsel in cookie.items():
+            cookies_dict[key] = morsel.value
+            cookiejar = cookiejar_from_dict(
+                cookies_dict, cookiejar=None, overwrite=True
+            )
+        return cookiejar
 
 
 if __name__ == '__main__':

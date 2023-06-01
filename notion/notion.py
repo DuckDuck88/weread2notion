@@ -3,24 +3,40 @@ import sys
 import time
 from datetime import datetime
 
-from logger import info
+from retrying import retry
+
+from logger import info, debug
 
 o_path = os.getcwd()
 sys.path.append(o_path)
 
 from notion_client import Client
 
-from settings.settings import NOTION_TOKEN
-
 
 class NotionClient(object):
 
-    def __init__(self):
-        self.client = Client(auth=NOTION_TOKEN)
+    def __init__(self, token, database_id):
+        self.client = Client(auth=token)
+        self.database_id = database_id
 
     def test_api(self):
         res = self.client.search(query="收藏夹").get("results")
         info(res)
+
+    def check(self, bookId):
+        """检查是否已经插入过 如果已经插入了就删除"""
+        time.sleep(0.3)
+        debug(f"开始检查{bookId}是否已经插入")
+        filter = {
+            "property": "BookId",
+            "rich_text": {
+                "equals": bookId
+            }
+        }
+        response = self.client.databases.query(database_id=self.database_id, filter=filter)
+        for result in response["results"]:
+            time.sleep(0.3)
+            self.client.blocks.delete(block_id=result["id"])
 
     def get_table_of_contents(self):
         """获取目录"""
@@ -141,12 +157,27 @@ class NotionClient(object):
                     "style"), i.get("colorStyle"), i.get("review").get("reviewId")))
         return children, grandchild
 
-    def insert_to_notion(self, database_id, bookName, bookId, book_str_id, cover, sort, author, isbn, rating,
+    def add_children(self, id, children):
+        results = []
+        for i in range(0, len(children) // 100 + 1):
+            time.sleep(0.3)
+            response = self.client.blocks.children.append(
+                block_id=id, children=children[i * 100:(i + 1) * 100])
+            results.extend(response.get("results"))
+        return results if len(results) == len(children) else None
+
+    def add_grandchild(self, grandchild, results):
+        for key, value in grandchild.items():
+            time.sleep(0.3)
+            id = results[key].get("id")
+            self.client.blocks.children.append(block_id=id, children=[value])
+
+    def insert_to_notion(self, bookName, bookId, book_str_id, cover, sort, author, isbn, rating,
                          read_info=None):
         """插入到notion"""
         time.sleep(0.3)
         parent = {
-            "database_id": database_id,
+            "database_id": self.database_id,
             "type": "database_id"
         }
         properties = {
@@ -189,8 +220,9 @@ class NotionClient(object):
         id = response["id"]
         return id
 
-    def get_sort(self, database_id):
-        """获取database中的最新时间"""
+    @retry(stop_max_attempt_number=3, wait_fixed=1000)
+    def get_sort(self):
+        """获取database中的上次编辑时间"""
         filter = {
             "property": "Sort",
             "number": {
@@ -204,7 +236,7 @@ class NotionClient(object):
             }
         ]
         response = self.client.databases.query(
-            database_id=database_id, filter=filter, sorts=sorts, page_size=1)
+            database_id=self.database_id, filter=filter, sorts=sorts, page_size=1)
         if (len(response.get("results")) == 1):
             return response.get("results")[0].get("properties").get("Sort").get("number")
         return 0
