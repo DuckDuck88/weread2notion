@@ -31,15 +31,14 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
             sort = book["sort"]  # 更新时间
             book = book.get("book")
             title = book.get("title")
-            print(book_blacklist)
             if title in book_blacklist:
                 info(f'《{title}》在黑名单中，跳过')
                 continue
             # if book.get("title") != '黄金时代':
             #     continue
-            # if sort <= notion.get_sort():
-            #     warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
-            #     continue
+            if sort <= notion.get_sort():
+                warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
+                continue
             cover = book.get("cover")
             bookId = book.get("bookId")
             author = book.get("author")

@@ -127,14 +127,13 @@ class WeRead:
         """获取笔记本列表"""
         # params = dict(userVid=self.session.cookies.get("wr_vid"))
         r = self.session.get(self.WEREAD_NOTEBOOKS_URL)
-        if r.ok:
-            data = r.json()
-            books = data.get("books")
-            books.sort(key=lambda x: x["sort"])
-            return books
-        else:
+        if not r.ok:
             error(f'获取图书失败,{r.text}')
-        return None
+            raise RuntimeError(f'获取图书失败,{r.text}')
+        data = r.json()
+        books = data.get("books")
+        books.sort(key=lambda x: x["sort"])
+        return books
 
     def parse_cookie_string(self, cookie_string):
         cookie = SimpleCookie()
