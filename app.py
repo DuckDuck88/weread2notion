@@ -1,35 +1,12 @@
-import time
-
-import browsercookie
-import pywebio
-from flask import Flask, render_template, request, Response
-
 from logger import info, exception
 from weread_2_notion import weread_2_notion
 from pywebio.platform.flask import webio_view
-from pywebio.input import input, TEXT, input_group, textarea, PASSWORD
+from pywebio.input import *
 from pywebio.output import *
 
 from flask import Flask
 
 app = Flask(__name__)
-
-
-@app.route('/wereadtonotion2', methods=['GET', 'POST'])
-def home():
-    if request.method == 'POST':
-        notion_token = request.form['notion_token']
-        weread_cookie = request.form['weread_cookie']
-        database_id = request.form['database_id']
-        book_blacklist = request.form.getlist('book_blacklist')
-        try:
-            res = weread_2_notion(notion_token, weread_cookie, database_id, book_blacklist)
-        except Exception as e:
-            return Response(str(e), mimetype='text/plain')
-
-        return Response(res, mimetype='text/plain')
-
-    return render_template('wereadtonotion.html')
 
 
 def output_help_info():
@@ -79,8 +56,8 @@ def weread_to_noiton():
     return put_success('成功:' + str(res), closable=True)
 
 
-app.add_url_rule('/weread_to_noiton', 'webio_view', webio_view(weread_to_noiton),
+app.add_url_rule('/tools/weread_to_noiton', 'webio_view', webio_view(weread_to_noiton),
                  methods=['GET', 'POST'])  # need GET,POST and OPTIONS methods
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=6000, debug=False)
