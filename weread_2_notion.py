@@ -1,11 +1,13 @@
 import time
 
-from logger import info, debug, warning
+from logger import info, debug, warning, error
 from notion.notion import NotionClient
 from weread.weread import WeRead
 
-from settings.settings import WEREAD_COOKIE, DATABASE_ID, BOOK_BLACKLIST
-from settings.settings import NOTION_TOKEN
+try:
+    from settings.settings import WEREAD_COOKIE, DATABASE_ID, BOOK_BLACKLIST, NOTION_TOKEN
+except Exception as e:
+    error(f'导入配置文件失败，{e} Web 无伤大雅')
 
 
 def weread_2_notion(notion_token=NOTION_TOKEN,
