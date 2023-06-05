@@ -1,13 +1,9 @@
 import hashlib
-import json
 import re
 from http.cookies import SimpleCookie
-
 import requests
 from requests.utils import cookiejar_from_dict
-
-from logger import info, error
-from settings.settings import WEREAD_COOKIE
+from logger import error
 
 
 class WeRead:
