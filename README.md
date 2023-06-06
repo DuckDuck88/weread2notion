@@ -1,7 +1,7 @@
 # wereadtonotion
 
 微信读书笔记、划线等信息同步到notion数据库
-> 效果如下
+> 效果如下：
 > ![同步效果](https://markdown-mac-work-1306720256.cos.ap-guangzhou.myqcloud.com/png/AzRZUp.png)
 
 ## 使用方法
