@@ -56,7 +56,7 @@ def weread_to_noiton():
     return put_success('成功:' + str(res), closable=True)
 
 
-app.add_url_rule('/tools/weread_to_noiton', 'webio_view', webio_view(weread_to_noiton),
+app.add_url_rule('/', 'webio_view', webio_view(weread_to_noiton),
                  methods=['GET', 'POST'])  # need GET,POST and OPTIONS methods
 
 if __name__ == '__main__':
