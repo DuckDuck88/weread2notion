@@ -15,4 +15,4 @@ fi
 docker build -t weread-to-notion:$version .
 
 # 启动容器
-docker run -p 8000:6000 weread-to-notion:$version
+docker run -d  -p 7000:80 weread-to-notion:$version

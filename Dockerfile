@@ -8,10 +8,10 @@ WORKDIR /app
 COPY . /app
 
 # 安装应用所需的依赖
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # 暴露容器的端口
-EXPOSE 6000
+EXPOSE 80
 
 # 运行应用
 CMD ["gunicorn", "--config", "gunicorn_config.py", "app:app"]

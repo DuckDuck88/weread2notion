@@ -60,4 +60,4 @@ app.add_url_rule('/tools/weread_to_noiton', 'webio_view', webio_view(weread_to_n
                  methods=['GET', 'POST'])  # need GET,POST and OPTIONS methods
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000, debug=False)
+    app.run(host='0.0.0.0', port=80, debug=False)
