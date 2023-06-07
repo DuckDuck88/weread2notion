@@ -72,9 +72,9 @@ def weread_to_notion():
     #     ], size='25% 4% 69%'),
     # ])
     notion_token, weread_cookie, database_id, book_blacklist = input_config_info(scope='main')
-    put_info('注意: 书籍较多时处理时间较长，请耐心等待')
+    put_info('注意: 书籍较多时处理时间较长，当前页面可观察同步进度，关闭页面可以继续同步')
     try:
-        with put_loading():
+        with put_loading(shape='grow', color='primary'):
             all_book, handled_book, ignore_book = weread_2_notion(notion_token,
                                                                   weread_cookie,
                                                                   database_id,

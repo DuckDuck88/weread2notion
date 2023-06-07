@@ -1,5 +1,7 @@
 import time
 
+from pywebio.output import put_text, put_info
+
 from logger import info, debug, warning, error
 from notion.notion import NotionClient
 from weread.weread import WeRead
@@ -14,7 +16,6 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
                     weread_cookie=WEREAD_COOKIE,
                     database_id=DATABASE_ID,
                     book_blacklist=BOOK_BLACKLIST):
-    start_time = time.time()
     try:
         weread_ = WeRead(weread_cookie)
     except Exception as e:
@@ -36,14 +37,15 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
             sort = book["sort"]  # 更新时间
             book = book.get("book")
             title = book.get("title")
+            put_text(f' 正在同步：《{title}》, 当前进度 {len(handled_book) + len(ignore_book)}/{len(books)}')
             all_book.append(title)
             if title in book_blacklist:
                 info(f'《{title}》在黑名单中，跳过')
                 ignore_book.append(title)
                 continue
-            if book.get("title") != '黄金时代':
-                ignore_book.append(title)
-                continue
+            # if book.get("title") != '黄金时代':
+            #     ignore_book.append(title)
+            #     continue
             if sort <= notion.get_sort():
                 warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
                 ignore_book.append(title)
