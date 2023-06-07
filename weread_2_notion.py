@@ -28,19 +28,27 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
         books = weread_.get_notebooklist()
     except Exception as e:
         raise Exception(f'获取书籍列表失败，请检查微信读书 cookies 是否正确 {e.__str__()}')
+    all_book = []
+    handled_book = []
+    ignore_book = []
     if books is not None:
         for book in books:
             sort = book["sort"]  # 更新时间
             book = book.get("book")
             title = book.get("title")
+            all_book.append(title)
             if title in book_blacklist:
                 info(f'《{title}》在黑名单中，跳过')
+                ignore_book.append(title)
                 continue
-            # if book.get("title") != '黄金时代':
-            #     continue
+            if book.get("title") != '黄金时代':
+                ignore_book.append(title)
+                continue
             if sort <= notion.get_sort():
                 warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
+                ignore_book.append(title)
                 continue
+            handled_book.append(title)
             cover = book.get("cover")
             bookId = book.get("bookId")
             author = book.get("author")
@@ -70,7 +78,7 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
             if (len(grandchild) > 0 and results != None):
                 notion.add_grandchild(grandchild, results)
             debug(f'结束处理《{title}》, bookId={bookId}, sort={sort}')
-        return f'处理结束，耗时{str(time.time() - start_time)}s'
+        return all_book, handled_book, ignore_book
 
 
 if __name__ == '__main__':
