@@ -36,5 +36,10 @@
 `python3 app.py`
 
 ## PS
-> 借鉴了大佬的[项目](https://github.com/malinkang/weread_to_notion)，优化了代码结构、增加了web 端。后续想考虑支持自定义 Noiton 数据库结构和单独导出功能。
-> 配合 NoitonNext 构建 Blog [效果]([yaya.run](https://yaya.run/article/1c51da0f-757a-47e5-8296-cc37798b8211))惊人。
+- 借鉴了大佬的[项目](https://github.com/malinkang/weread_to_notion)，优化了代码结构、增加了web 端。
+- 后续增加功能
+   - [ ] 考虑支持自定义 Noiton 数据库结构
+   - [ ] 单独导出功能。
+   - [ ] 支持 Notion 增量读写
+
+- 配合 NoitonNext 构建 Blog [效果](https://yaya.run/article/1c51da0f-757a-47e5-8296-cc37798b8211)非常好
