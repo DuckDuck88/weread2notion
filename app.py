@@ -10,6 +10,11 @@ app = Flask(__name__)
 
 
 def output_help_info(scope=None):
+    put_markdown(""" 
+     ## 微信读书书籍同步到 Notion 数据库
+     **项目地址** ：[weread_2_notion](https://github.com/DuckDuck88/weread2notion)
+     """)
+    put_text()
     put_collapse('使用说明', [
         put_markdown('''
         1. 获取 Notion token
