@@ -1,6 +1,6 @@
 import time
 
-from pywebio.output import put_text, put_info
+from pywebio.output import put_text
 
 from logger import info, debug, warning, error
 from notion.notion import NotionClient
@@ -15,7 +15,8 @@ except Exception as e:
 def weread_2_notion(notion_token=NOTION_TOKEN,
                     weread_cookie=WEREAD_COOKIE,
                     database_id=DATABASE_ID,
-                    book_blacklist=BOOK_BLACKLIST):
+                    book_blacklist=BOOK_BLACKLIST,
+                    is_web=True):
     try:
         weread_ = WeRead(weread_cookie)
     except Exception as e:
@@ -37,7 +38,9 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
             sort = book["sort"]  # 更新时间
             book = book.get("book")
             title = book.get("title")
-            put_text(f' 正在同步：《{title}》, 当前进度 {len(handled_book) + len(ignore_book)}/{len(books)}')
+            info(f' 正在同步：《{title}》, 当前进度 {len(handled_book) + len(ignore_book)}/{len(books)}')
+            if is_web:
+                put_text(f' 正在同步：《{title}》, 当前进度 {len(handled_book) + len(ignore_book)}/{len(books)}')
             all_book.append(title)
             if title in book_blacklist:
                 info(f'《{title}》在黑名单中，跳过')
@@ -84,7 +87,7 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
 
 
 if __name__ == '__main__':
-    weread_2_notion()
+    weread_2_notion(is_web=False)
     # weread = WeRead(WEREAD_COOKIE)
     # print(weread.session.cookies.get_dict())
     # res = weread.session.get(
