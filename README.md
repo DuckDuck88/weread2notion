@@ -42,7 +42,7 @@
    - [ ] 单独导出功能。
    - [ ] 支持 Notion 增量读写
 
-- 配合 NoitonNext 构建 Blog [效果](https://yaya.run/article/1c51da0f-757a-47e5-8296-cc37798b8211)非常好
+- 配合 NoitonNext 构建 Blog [效果](https://yaya.run/weread)非常好
 
 ## 免责申明
 本工具仅作技术研究之用，请勿用于商业或违法用途，由于使用该工具导致的侵权或其它问题，该本工具不承担任何责任！
