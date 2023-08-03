@@ -41,9 +41,9 @@ class WeRead:
         category = ""
         if r.ok:
             data = r.json()
-            isbn = data["isbn"]
+            isbn = data.get("isbn", "-1")
             newRating = data["newRating"] / 1000
-            intro = data["intro"]
+            intro = data.get('intro', '本书没有介绍！')
             category = data["category"]
         return (isbn, newRating, intro, category)
 
