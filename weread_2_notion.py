@@ -46,13 +46,13 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
                 info(f'《{title}》在黑名单中，跳过')
                 ignore_book.append(title)
                 continue
-            # if book.get("title") != '黄金时代':
-            #     ignore_book.append(title)
-            #     continue
-            if sort <= notion.get_sort():
-                warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
+            if book.get("title") != '黄金时代':
                 ignore_book.append(title)
                 continue
+            # if sort <= notion.get_sort():
+            #     warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
+            #     ignore_book.append(title)
+            #     continue
             handled_book.append(title)
             cover = book.get("cover")
             bookId = book.get("bookId")
@@ -63,6 +63,7 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
             bookmark_list = weread_.get_bookmark_list(bookId)
             summary, reviews = weread_.get_review_list(bookId)
             bookmark_list.extend(reviews)
+            print(bookmark_list)
             bookmark_list = sorted(bookmark_list, key=lambda x: (
                 x.get("chapterUid", 1), 0 if (x.get("range", "") == "" or x.get("range").split("-")[0] == "") else int(
                     x.get("range").split("-")[0])))
