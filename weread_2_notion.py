@@ -55,10 +55,12 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
                 #     continue
                 # print(book['123'])
                 # print(book)
-                if sort <= notion.get_sort():
-                    warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
-                    ignore_book.append(title)
-                    continue
+
+                # 跳过是否更新判断，直接更新，否则给其他人使用会导致 notion 更新时间不一致
+                # if sort <= notion.get_sort():
+                #     warning(f'当前图书《{title}》没有更新划线、书评等信息，暂不处理')
+                #     ignore_book.append(title)
+                #     continue
                 handled_book.append(title)
                 cover = book.get("cover", '没有封面')
                 bookId = book.get("bookId", '-1')
