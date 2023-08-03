@@ -21,7 +21,7 @@ def output_help_info(scope=None):
             - 打开开发者工具(按 F12)，点击 network(网络)，刷新页面, 点击第一个请求，复制 cookie 的值。
                 > ![drULBf](https://markdown-mac-work-1306720256.cos.ap-guangzhou.myqcloud.com/png/drULBf.png)
         3. 准备 Noiton Database ID
-            - 复制这个[Notion 数据库](https://www.notion.so/yayya/d92bb4b8434745baa2061caf67d6ef7a?v=b4a5bfb89e8e44868a473179ee608851)到你的 Notion 中，点击右上角的分享按钮，将页面分享为公开页面
+            - 复制这个[Notion 数据库](https://www.notion.so/yayya/a9b3a8dfcc0543559005a263103fc81c)到你的 Notion 中，点击右上角的分享按钮，将页面分享为公开页面
             - 点击页面右上角三个点，在 connections 中找到选择你的 connections。选择第一步中创建的 integration 的 name
             - 打开你复制的 Notion 页面，通过该页面 URL 找到你的 Database ID 。
                 > 例如：页面 https://www.notion.so/xxxx/d92bb4b8434745baa2061caf67d6ef7a?v=b4a5bfb89e8e44868a473179ee60x851 的 ID 为d92bb4b8434745baa2061caf67d6ef7a
