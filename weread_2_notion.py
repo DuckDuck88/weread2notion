@@ -27,7 +27,7 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
         raise Exception(f'notion 登录失败，{e}')
     # 书籍列表
     try:
-        books = weread_.get_notebooklist()
+        books = weread_.get_notebooklist()  # TODO 增加逻辑，获取所有书籍列表。 当前是获取存在划线信息的书籍列表
     except Exception as e:
         raise Exception(f'获取书籍列表失败，请检查微信读书 cookies 是否正确 {e.__str__()}')
     all_book = []

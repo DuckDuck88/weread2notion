@@ -42,9 +42,9 @@ class WeRead:
         if r.ok:
             data = r.json()
             isbn = data.get("isbn", "-1")
-            newRating = data["newRating"] / 1000
+            newRating = data.get("newRating", '-1') / 1000
             intro = data.get('intro', '本书没有介绍！')
-            category = data["category"]
+            category = data.get("category", 'None')
         return (isbn, newRating, intro, category)
 
     def get_review_list(self, bookId):
