@@ -26,7 +26,7 @@ def output_help_info(scope=None):
             - 打开开发者工具(按 F12)，点击 network(网络)，刷新页面, 点击第一个请求，复制 cookie 的值。
                 > ![drULBf](https://markdown-mac-work-1306720256.cos.ap-guangzhou.myqcloud.com/png/drULBf.png)
         3. 准备 Noiton Database ID
-            - 复制这个[Notion 数据库](https://www.notion.so/yayya/d92bb4b8434745baa2061caf67d6ef7a?v=b4a5bfb89e8e44868a473179ee608851)到你的 Notion 中，点击右上角的分享按钮，将页面分享为公开页面
+            - 复制这个[Notion 数据库](https://yayya.notion.site/10d8b5402c924498b44302e4ce75385c?v=05c0d43e80564da290f9fa837170013a&pvs=4)到你的 Notion 中，点击右上角的分享按钮，将页面分享为公开页面
             - 点击页面右上角三个点，在 connections 中找到选择你的 connections。选择第一步中创建的 integration 的 name
             - 打开你复制的 Notion 页面，通过该页面 URL 找到你的 Database ID 。
                 > 例如：页面 https://www.notion.so/xxxx/d92bb4b8434745baa2061caf67d6ef7a?v=b4a5bfb89e8e44868a473179ee60x851 的 ID 为d92bb4b8434745baa2061caf67d6ef7a
@@ -65,6 +65,13 @@ def list_to_str(l):
     return '> ' + res if res else '> 无'
 
 
+def dict_to_str(d):
+    res = ""
+    for k, v in d.items():
+        res += f'书籍：*《{k}》* 失败原因: {v[0]}, 书籍详情: {v[1]}'
+    return '> ' + res if res else '> 无'
+
+
 def weread_to_notion():
     output_help_info(scope='head')
     # put_column([
@@ -80,19 +87,21 @@ def weread_to_notion():
     put_info('注意: 书籍较多时处理时间较长，当前页面可观察同步进度，关闭页面可以继续同步')
     try:
         with put_loading(shape='grow', color='primary'):
-            all_book, handled_book, ignore_book = weread_2_notion(notion_token,
-                                                                  weread_cookie,
-                                                                  database_id,
-                                                                  book_blacklist)
+            all_book, handled_book, ignore_book, err_book = weread_2_notion(notion_token,
+                                                                            weread_cookie,
+                                                                            database_id,
+                                                                            book_blacklist)
     except Exception as e:
         exception(f'失败:{str(e)}')
         put_error(f'{str(e)}', closable=False)
         return put_error(f'请刷新当前页面重新输入正确配置', closable=True)
     put_info(f'共有{len(all_book)}本书籍，其中{len(ignore_book)}本书籍被忽略，{len(handled_book)}本书籍被同步')
     put_markdown(f'**成功同步以下书籍**:\n{list_to_str(handled_book)}')
+    put_markdown(f'**同步以下书籍失败！**:\n{dict_to_str(err_book)}')
     put_markdown(f'**忽略以下书籍**:\n{list_to_str(ignore_book)}')
-    return put_success(f'共有{len(all_book)}本书籍，其中{len(ignore_book)}本书籍被忽略，{len(handled_book)}本书籍被同步',
-                       closable=True)
+    return put_success(
+        f'共有{len(all_book)}本书籍，其中{len(ignore_book)}本书籍被忽略，{len(handled_book)}本书籍被同步,{len(err_book)}本书籍同步失败！',
+        closable=True)
 
 
 app.add_url_rule('/', 'webio_view', webio_view(weread_to_notion),
