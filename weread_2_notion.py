@@ -75,7 +75,11 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
                     x.get("chapterUid", 1),
                     0 if (x.get("range", "") == "" or x.get("range").split("-")[0] == "") else int(
                         x.get("range").split("-")[0])))
+                # 获取书籍信息
                 isbn, rating, intro, category = weread_.get_bookinfo(bookId)
+                # 获取阅读信息
+                read_info = weread_.get_read_info(bookId)
+
                 children, grandchild = notion.get_children(
                     chapter, summary, bookmark_list)
                 block_id = notion.insert_to_notion(bookName=title,
@@ -87,7 +91,8 @@ def weread_2_notion(notion_token=NOTION_TOKEN,
                                                    isbn=isbn,
                                                    rating=rating,
                                                    intro=intro,
-                                                   category=category)
+                                                   category=category,
+                                                   read_info=read_info)
                 results = notion.add_children(block_id, children)
                 if (len(grandchild) > 0 and results != None):
                     notion.add_grandchild(grandchild, results)

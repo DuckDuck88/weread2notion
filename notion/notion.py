@@ -202,13 +202,12 @@ class NotionClient(object):
             minutes = readingTime % 3600 // 60
             if minutes > 0:
                 format_time += f"{minutes}分"
-            properties["Status"] = {"select": {
-                "name": "读完" if markedStatus == 4 else "在读"}}
-            properties["ReadingTime"] = {"rich_text": [
-                {"type": "text", "text": {"content": format_time}}]}
+            properties["Status"] = {"select": {"name": "读完" if markedStatus == 4 else "在读"}}
+            properties["ReadingTime"] = {"rich_text": [{"type": "text", "text": {"content": format_time}}]}
             if "finishedDate" in read_info:
-                properties["Date"] = {"date": {"start": datetime.utcfromtimestamp(read_info.get(
-                    "finishedDate")).strftime("%Y-%m-%d %H:%M:%S"), "time_zone": "Asia/Shanghai"}}
+                properties["Date"] = {"date": {
+                    "start": datetime.utcfromtimestamp(read_info.get("finishedDate")).strftime("%Y-%m-%d %H:%M:%S"),
+                    "time_zone": "Asia/Shanghai"}}
 
         icon = {
             "type": "external",
