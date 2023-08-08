@@ -25,7 +25,8 @@
 
 ### 1. 本地脚本运行
 
-1. 配置 settings/settings.py 文件中的信息
+1. 安装依赖 `pip install -r requirements.txt`
+2. 配置 settings/settings.py 文件中的信息
    > 1. 获取 **Notion token**
    > - 打开[此页面](https://www.notion.so/my-integrations)并登录
    > - 点击New integration 输入 name 提交.(如果已有，则点击 view integration)
@@ -40,8 +41,7 @@
    >- 通过 URL 找到你的 Database ID 的值。
       >  > 例如：页面 https://www.notion.so/yayya/d92bb4b8434745baa2061caf67d6ef7a?v=b4a5bfb89e8e44868a473179ee60x851 的
       ID 为d92bb4b8434745baa2061caf67d6ef7a
-2. 打开文件 weread_2_notion.py
-3. 运行 `python weread_2_notion.py`
+4. 运行 `python weread_2_notion.py`
 
 ### 2. 网页端部署运行
 
@@ -51,8 +51,8 @@
 
 #### 直接部署
 
-`python3 install -r requirement.txt`
-`python3 app.py`
+1. 安装依赖：`python3 install -r requirement.txt`
+2. 启动 Web 端： `python3 app.py`
 
 ## PS
 
